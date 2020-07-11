@@ -6,8 +6,8 @@ from datetime import datetime, timedelta, time
 def time_splitter(times):
 	return {
 		"Mon": {
-			"open": time(10,00),
-			"close": time(20, 00)
+			"open": time(00,00),
+			"close": time(23, 59)
 		},
 		"Tue": {
 			"open": time(8, 00),
@@ -18,7 +18,7 @@ def time_splitter(times):
 
 def checker( rest_obj, date_time):
 	lunch_day = date_time.strftime("%a")
-	lunch_time = date_time + timedelta(hours=1)
+	lunch_time = date_time + timedelta(minutes=59)
 	if lunch_day in rest_obj["timetable"].keys() :
 		print(lunch_time)
 		if rest_obj["timetable"][lunch_day]["open"] < lunch_time.time() and rest_obj["timetable"][lunch_day]["close"] >= lunch_time.time() :
@@ -50,7 +50,7 @@ def find_my_lunch(the_file, the_time):
 
 
 
-lunchtime = datetime(2020, 7, 6, 19, 1) 
+lunchtime = datetime(2020, 7, 6, 23, 0) 
 find_my_lunch("restaurants.csv", lunchtime)
 
 
