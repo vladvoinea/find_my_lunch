@@ -6,6 +6,10 @@ input1 = "Mon-Thu 11 am - 10:30 pm  / Fri  / Sat 11:30 am - 11 pm  / Sun 4:30 pm
 input2 = "Mon-Thu, Sun 11:30 am - 10 pm  / Fri-Sat 11:30 am - 11 pm"
 
 def time_splitter(interval):
+    intervals = interval.split("-")
+
+
+
     return {
             "open": str(time(8, 00)),
             "close": str(time(22, 00))
@@ -43,6 +47,7 @@ def unit_splitter(the_unit):
             timetable.update( { day : time_splitter(interval) } )
 
     return timetable
-rez = unit_splitter(input2)
-print(json.dumps(rez, indent=4  ) )
-#day_splitter("Mon-Tue")
+#rez = unit_splitter(input2)
+#print(json.dumps(rez, indent=4  ) )
+
+print(time_splitter("11 am - 10:30 pm"))
