@@ -23,8 +23,12 @@ def time_splitter(interval):
 
 
 	intervals = interval.split("-")
+
+	# removing leading and trailing spaces
 	opening = intervals[0].strip()
 	closing = intervals[1].strip()
+
+	#Trying to match a format of '10:30 pm' or '11 am'
 	try:
 		opening_datetine = datetime.strptime(opening, "%I:%M %p" )
 	except ValueError:
@@ -59,10 +63,15 @@ def day_splitter(days):
 	'''
 	days_list = days.split("-")
 	if len(days_list) == 1:
+		# in case we only have one day
 		return [days_list[0]]
-	elif len(days_list)  == 2:       
+	elif len(days_list)  == 2:      
+		# in case we have an in terval
+		# getting the index of where the start and end day are located within the week 
 		start_day = weekdays.index( days_list[0] )
 		end_day = weekdays.index(days_list[1])
+
+		# then using them to slice the weekdays list
 		return weekdays[start_day : end_day + 1]
 
 
@@ -93,28 +102,33 @@ def unit_splitter(the_unit):
 
 
 	"""
-    timetable = {}
-    days_list = []
-    times_list = the_unit.split("/")
-    for unit in times_list:
-        if unit.find(",") > 0:
-            
-            first_days = day_splitter( unit.split(",")[0] )
-            second_unit = unit.split(",")[1]
-            second_days = day_splitter( second_unit.split()[0] )
-            days_list.extend(first_days)
-            days_list.extend(second_days)
-            interval = second_unit.split(maxsplit=1)[1]
+	timetable = {}
+	days_list = []
+	times_list = the_unit.split("/")
+	for unit in times_list:
+		if unit.find(",") > 0:
 
-        else:
-            
-            days_list = day_splitter( unit.split()[0] )
-            interval = unit.split(maxsplit=1)[1]
-        for day in days_list:
-            
-            timetable.update( { day : time_splitter(interval) } )
+			# dealing with the tricky scenario when the opening hours match 2 different intervals like 'Mon-Thu, Sun 9 am - 10 pm'
+			first_days = day_splitter( unit.split(",")[0] )
+			second_unit = unit.split(",")[1]
+			second_days = day_splitter( second_unit.split()[0] )
+			days_list.extend(first_days)
+			days_list.extend(second_days)
 
-    return timetable
+			# we need to get the time interval so just split after the first space to get '9 am - 10 pm'
+			interval = second_unit.split(maxsplit=1)[1]
+
+		else:
+			
+			# the simple scenario 'Mon-Thu 9 am - 10 p'
+			days_list = day_splitter( unit.split()[0] )
+			interval = unit.split(maxsplit=1)[1]
+		for day in days_list:
+			
+			# adding a key value pair to the dict using the .update() method
+			timetable.update( { day : time_splitter(interval) } )
+
+	return timetable
 
 
 
@@ -144,7 +158,10 @@ def checker( rest_obj, date_time):
 	FALSE if the restaurant is closed or closes by the time we want to have a 59min lunch
 
 	"""
+
+	# get the day of our intended lunch
 	lunch_day = date_time.strftime("%a")
+	# calculate the start time of the lunch + an estimated 59 minutes in order to have time to eat when you want to start your lunch at 12:55 and the restaurant closes at 13:00
 	lunch_time = date_time + timedelta(minutes=59)
 	if lunch_day in rest_obj["timetable"].keys() :
 		
@@ -166,22 +183,26 @@ def find_my_lunch(the_file, the_time):
 	the name of a csv file structured like:
 	"Herbivore","Mon-Thu, Sun 9 am - 10 pm  / Fri-Sat 9 am - 11 pm"
 
-	
+
 	"""
 
+	open_list = []
 	with open(the_file, newline='') as csvfile:
+		# put our own headers to the file since it doesn't have any
 		fieldnames = ["restaurant" , "times"]
 		reader = csv.DictReader(csvfile, fieldnames = fieldnames)
 		for row in reader:
-			#print(row["restaurant"] +" ==> "+row['times'])
+
 			rest_obj = { "name": row['restaurant'], 
 						 "timetable": unit_splitter( row['times'] )
 			}
 			
 			if checker(rest_obj, the_time):
 				print(rest_obj["name"] +  " is open")
+				open_list.append( rest_obj["name"] )
 			else:
 				print(rest_obj["name"] +  " IS CLOSED")
+		return open_list
 		
 
 	
@@ -189,7 +210,7 @@ def find_my_lunch(the_file, the_time):
 
 
 lunchtime = datetime(2020, 7, 6, 17, 0) 
-find_my_lunch("restaurants.csv", lunchtime)
+print( find_my_lunch("restaurants.csv", lunchtime) )
 
 
 
