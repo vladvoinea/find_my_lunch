@@ -5,6 +5,22 @@ from datetime import datetime, timedelta, time
 weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 def time_splitter(interval):
+	"""
+	Splits the time interval into opening and closing datetime times
+	Args:
+	An string that has the following interval pattern:
+	'11 am - 10:30 pm'
+
+	Returns:
+	A dict like:
+	{
+		"open": datetime.time,
+		"close": datetime.time
+    }
+
+	"""
+
+
     intervals = interval.split("-")
     opening = intervals[0].strip()
     closing = intervals[1].strip()
@@ -25,6 +41,20 @@ def time_splitter(interval):
         }
 
 def day_splitter(days):
+	"""  
+	Generates a list of days from a weekday interval
+
+	Args:
+	A string interval of the following patterns:
+	'Mon-Tue'
+	'Tue'
+
+	Returns:
+	A list of all the weekdays contained in the passed interval
+	['Mon', 'Tue', 'Wed', 'Thu']
+	['Tue']
+	
+	"""
     days_list = days.split("-")
     if len(days_list) == 1:
         return [days_list[0]]
@@ -36,6 +66,29 @@ def day_splitter(days):
 
 
 def unit_splitter(the_unit):
+	""" 
+	Splits series of weekday and time intervals and build a dict that will contain the structured timetable
+	for each restaurant
+
+	Args:
+	A time table series of units like:
+	'Mon-Thu, Sun 11:30 am - 10 pm  / Fri-Sat 11:30 am - 11 pm'
+
+	Returns:
+	A dict with structured data:
+	{
+		"Mon": {
+			"open":datetime.time,
+			"close":datetime.time
+		},
+		"Tue": {
+			"open":datetime.time,
+			"close":datetime.time
+		}
+	}
+
+
+	"""
     timetable = {}
     days_list = []
     times_list = the_unit.split("/")
@@ -62,6 +115,29 @@ def unit_splitter(the_unit):
 
 
 def checker( rest_obj, date_time):
+	""" 
+	Checks the object containg all the restaurant timetables against our specific lunch time
+
+	Args:
+	rest_obj is a dict a restaurant timetable:
+	
+		"timetable": {
+			"Mon": {
+				"open":datetime.time,
+				"close":datetime.time
+			},
+			"Tue": {
+				"open":datetime.time,
+				"close":datetime.time
+			}
+		}
+	
+
+	Returns:
+	TRUE if the timetable shows that the restaurant is open for us to have a 1 hour lunch
+	FALSE if the restaurant is closed or closes by the time we want to have a 1 hour lunch
+
+	"""
 	lunch_day = date_time.strftime("%a")
 	lunch_time = date_time + timedelta(minutes=59)
 	if lunch_day in rest_obj["timetable"].keys() :

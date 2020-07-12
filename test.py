@@ -6,6 +6,16 @@ input1 = "Mon-Thu 11 am - 10:30 pm  / Fri  / Sat 11:30 am - 11 pm  / Sun 4:30 pm
 input2 = "Mon-Thu, Sun 11:30 am - 10 pm  / Fri-Sat 11:30 am - 11 pm"
 
 def time_splitter(interval):
+    """Gets and prints the spreadsheet's header columns
+
+Args:
+    file_loc (str): The file location of the spreadsheet
+    print_cols (bool): A flag used to print the columns to the console
+        (default is False)
+
+Returns:
+    list: a list of strings representing the header columns
+"""
     intervals = interval.split("-")
     opening = intervals[0].strip()
     closing = intervals[1].strip()
@@ -36,6 +46,7 @@ def day_splitter(days):
 
 
 
+
 def unit_splitter(the_unit):
     timetable = {}
     days_list = []
@@ -62,7 +73,9 @@ def unit_splitter(the_unit):
 
 
 
-rez = unit_splitter(input2)
-print(json.dumps(rez, indent=4  ) )
+#rez = unit_splitter(input2)
+#print(json.dumps(rez, indent=4  ) )
 
 #print(time_splitter("11 am-10:30 pm"))
+
+print(day_splitter("Mon-Thu"))
