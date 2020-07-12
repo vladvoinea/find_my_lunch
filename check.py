@@ -5,63 +5,65 @@ from datetime import datetime, timedelta, time
 weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 def time_splitter(interval):
-	"""
-	Splits the time interval into opening and closing datetime times
+	"""Splits the time interval into opening and closing datetime times
+
 	Args:
+	-----
 	An string that has the following interval pattern:
 	'11 am - 10:30 pm'
 
 	Returns:
+	--------
 	A dict like:
 	{
-		"open": datetime.time,
-		"close": datetime.time
-    }
-
+	 "open": datetime.time,
+	 "close": datetime.time
+	}
 	"""
 
 
-    intervals = interval.split("-")
-    opening = intervals[0].strip()
-    closing = intervals[1].strip()
-    try:
-        opening_datetine = datetime.strptime(opening, "%I:%M %p" )
-    except ValueError:
-        opening_datetine = datetime.strptime(opening, "%I %p" )
+	intervals = interval.split("-")
+	opening = intervals[0].strip()
+	closing = intervals[1].strip()
+	try:
+		opening_datetine = datetime.strptime(opening, "%I:%M %p" )
+	except ValueError:
+		opening_datetine = datetime.strptime(opening, "%I %p" )
 
-    try:
-        closing_datetime = datetime.strptime(closing, "%I:%M %p" )
-    except ValueError:
-        closing_datetime = datetime.strptime(closing, "%I %p" )
+	try:
+		closing_datetime = datetime.strptime(closing, "%I:%M %p" )
+	except ValueError:
+		closing_datetime = datetime.strptime(closing, "%I %p" )
 
 
-    return {
-            "open": opening_datetine.time(),
-            "close": closing_datetime.time()
-        }
+	return {
+			"open": opening_datetine.time(),
+			"close": closing_datetime.time()
+		}
 
 def day_splitter(days):
-	"""  
+	'''
 	Generates a list of days from a weekday interval
 
 	Args:
+	-----
 	A string interval of the following patterns:
 	'Mon-Tue'
 	'Tue'
 
 	Returns:
+	--------
 	A list of all the weekdays contained in the passed interval
 	['Mon', 'Tue', 'Wed', 'Thu']
 	['Tue']
-	
-	"""
-    days_list = days.split("-")
-    if len(days_list) == 1:
-        return [days_list[0]]
-    elif len(days_list)  == 2:       
-        start_day = weekdays.index( days_list[0] )
-        end_day = weekdays.index(days_list[1])
-        return weekdays[start_day : end_day + 1]
+	'''
+	days_list = days.split("-")
+	if len(days_list) == 1:
+		return [days_list[0]]
+	elif len(days_list)  == 2:       
+		start_day = weekdays.index( days_list[0] )
+		end_day = weekdays.index(days_list[1])
+		return weekdays[start_day : end_day + 1]
 
 
 
@@ -71,10 +73,12 @@ def unit_splitter(the_unit):
 	for each restaurant
 
 	Args:
+	-----
 	A time table series of units like:
 	'Mon-Thu, Sun 11:30 am - 10 pm  / Fri-Sat 11:30 am - 11 pm'
 
 	Returns:
+	--------
 	A dict with structured data:
 	{
 		"Mon": {
@@ -119,6 +123,7 @@ def checker( rest_obj, date_time):
 	Checks the object containg all the restaurant timetables against our specific lunch time
 
 	Args:
+	-----
 	rest_obj is a dict a restaurant timetable:
 	
 		"timetable": {
@@ -134,8 +139,9 @@ def checker( rest_obj, date_time):
 	
 
 	Returns:
-	TRUE if the timetable shows that the restaurant is open for us to have a 1 hour lunch
-	FALSE if the restaurant is closed or closes by the time we want to have a 1 hour lunch
+	--------
+	TRUE if the timetable shows that the restaurant is open for us to have a 59min lunch
+	FALSE if the restaurant is closed or closes by the time we want to have a 59min lunch
 
 	"""
 	lunch_day = date_time.strftime("%a")
@@ -152,6 +158,17 @@ def checker( rest_obj, date_time):
 
 
 def find_my_lunch(the_file, the_time):
+	"""
+	Opens the file, and iterates over the restaurants to check which is open
+
+	Args:
+	-----
+	the name of a csv file structured like:
+	"Herbivore","Mon-Thu, Sun 9 am - 10 pm  / Fri-Sat 9 am - 11 pm"
+
+	
+	"""
+
 	with open(the_file, newline='') as csvfile:
 		fieldnames = ["restaurant" , "times"]
 		reader = csv.DictReader(csvfile, fieldnames = fieldnames)
