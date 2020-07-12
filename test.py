@@ -38,29 +38,31 @@ def day_splitter(days):
 
 def unit_splitter(the_unit):
     timetable = {}
+    days_list = []
     times_list = the_unit.split("/")
     for unit in times_list:
         if unit.find(",") > 0:
             
-            extra_unit = unit.split(",")[1]
-            times_list.insert( times_list.index(unit) +1 ,  extra_unit)
-            corrected_unit = unit.split(",")[0]
-            #print( day_splitter( corrected_unit.split()[0] ) )
-            days_list = day_splitter( corrected_unit.split()[0] ) 
-            interval = extra_unit.split(maxsplit=1)[1]
+            first_days = day_splitter( unit.split(",")[0] )
+            second_unit = unit.split(",")[1]
+            second_days = day_splitter( second_unit.split()[0] )
+            days_list.extend(first_days)
+            days_list.extend(second_days)
+            interval = second_unit.split(maxsplit=1)[1]
+
         else:
-            #print( day_splitter( unit.split()[0]) )
-            days_list = day_splitter( unit.split()[0])
+            
+            days_list = day_splitter( unit.split()[0] )
             interval = unit.split(maxsplit=1)[1]
         for day in days_list:
-            #print(day + " -- " +interval)
+            
             timetable.update( { day : time_splitter(interval) } )
 
     return timetable
 
 
-    
-#rez = unit_splitter(input2)
-#print(json.dumps(rez, indent=4  ) )
 
-print(time_splitter("11 am-10:30 pm"))
+rez = unit_splitter(input2)
+print(json.dumps(rez, indent=4  ) )
+
+#print(time_splitter("11 am-10:30 pm"))
