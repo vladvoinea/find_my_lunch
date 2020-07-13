@@ -191,6 +191,12 @@ def find_my_lunch(the_file, the_time):
 
 
 	"""
+	# check the imput argument the_time
+	if type(the_time) is not datetime:
+		raise TypeError("the_time must be a datetime.datetime, not a %s" % type(the_time))
+	# check if the input argument the_file has the correct csv extension
+	if the_file.split(".")[1] != "csv":
+		raise TypeError("the_file needs to have a csv extension, not a %s extension" % the_file.split(".")[1])
 
 	open_list = []
 	with open(the_file, newline='') as csvfile:
