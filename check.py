@@ -184,6 +184,12 @@ def find_my_lunch(the_file, the_time):
 	"Herbivore","Mon-Thu, Sun 9 am - 10 pm  / Fri-Sat 9 am - 11 pm"
 
 
+	Returns:
+	--------
+	A list of restaurants that are open at the specified time + 59 minutes
+
+
+
 	"""
 
 	open_list = []
@@ -191,17 +197,21 @@ def find_my_lunch(the_file, the_time):
 		# put our own headers to the file since it doesn't have any
 		fieldnames = ["restaurant" , "times"]
 		reader = csv.DictReader(csvfile, fieldnames = fieldnames)
+
+		#perform the checks for each restaurant
 		for row in reader:
 
 			rest_obj = { "name": row['restaurant'], 
 						 "timetable": unit_splitter( row['times'] )
 			}
 			
+			# checking if the restaurant is open and appending the open ones to the list that will be returned
+			# printing a simple output helps to double check
 			if checker(rest_obj, the_time):
-				print(rest_obj["name"] +  " is open")
+				print(rest_obj["name"] +  " is << OPEN >> " + row["times"])
 				open_list.append( rest_obj["name"] )
 			else:
-				print(rest_obj["name"] +  " IS CLOSED")
+				print(rest_obj["name"] +  " IS ## CLOSED ## " + row["times"])
 		return open_list
 		
 
