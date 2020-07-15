@@ -1,6 +1,6 @@
 import json
 import csv
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta, time, date
 
 weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
@@ -164,13 +164,17 @@ def checker( rest_obj, date_time):
 	# calculate the start time of the lunch + an estimated 59 minutes in order to have time to eat when you want to start your lunch at 12:55 and the restaurant closes at 13:00
 	lunch_time = date_time + timedelta(minutes=59)
 	if lunch_day in rest_obj["timetable"].keys() :
-		
-		if rest_obj["timetable"][lunch_day]["open"] < lunch_time.time() and rest_obj["timetable"][lunch_day]["close"] >= lunch_time.time() :
-			return True
+		opening_time = datetime.combine(date_time.date(), rest_obj["timetable"][lunch_day]["open"] )
+		closing_time = datetime.combine(date_time.date(), rest_obj["timetable"][lunch_day]["close"] )
+
+		if closing_time.time() < opening_time.time():
+			closing_time = closing_time + timedelta(days=1)
+			if opening_time < lunch_time and closing_time >= lunch_time :
+				return True
 		else:
-			return False
-	else:
-		return False
+			if opening_time.time() < lunch_time.time() and closing_time.time() >= lunch_time.time() :
+				return True
+		
 
 
 
@@ -223,10 +227,10 @@ def find_my_lunch(the_file, the_time):
 
 	
 
+if __name__ == "__main__":
 
-
-lunchtime = datetime(2020, 7, 6, 17, 0) 
-print( find_my_lunch("restaurants.csv", lunchtime) )
+	lunchtime = datetime(2020, 7, 6, 17, 0) 
+	print( find_my_lunch("restaurants.csv", lunchtime) )
 
 
 

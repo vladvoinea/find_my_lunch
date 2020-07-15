@@ -27,6 +27,7 @@ find_my_lunch( "restaurants.csv", datetime.datetime(2020, 7, 6, 17, 0) )
 
 * The input lunch time could be "funny" like 12:55 and a specific restaurant could be closing at 13:00. Hence the need to have a lunch duration that will be added to the innitial lunch time in order to perform the comparison.
 * Some restaurants schedules have a day interval and a solitary day like: "Mon-Thu, Sun 11 am - 10 pm  / Fri-Sat 11 am - 12 am". So we need to correctly handle this scenario.
+* Big wrinkle: 12 am actually means midninght and we need to perform a check if the closing time < opening time this means that the closing time is the next day, like Mon-Fri 5pm-12:30 am
 
 
 ## Limitations
