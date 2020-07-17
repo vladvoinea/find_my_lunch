@@ -225,12 +225,14 @@ def find_my_lunch(the_file, the_time):
 		return open_list
 		
 
-	
+def main():
+	lunchtime = datetime(2020, 7, 6, 17, 0) 
+	print( find_my_lunch("restaurants.csv", lunchtime) )	
 
 if __name__ == "__main__":
+	main()
 
-	lunchtime = datetime(2020, 7, 6, 17, 0) 
-	print( find_my_lunch("restaurants.csv", lunchtime) )
+	
 
 
 
